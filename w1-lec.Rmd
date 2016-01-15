@@ -1,0 +1,39 @@
+---
+title: |
+    | Coursera Finance Specialisation (U Michigan)
+    | Course 3 -- Valuation: Alternative Methods
+    | Week 1 -- Valuation and Leverage
+author: "Joe Nguyen"
+date: "15 January 2016"
+output: html_document
+---
+
+```{r, echo=FALSE}
+rm(list = ls())
+
+# Change working directory
+dirBase <- "/home/joe/Documents/01-coursera/02-finance"
+dirWorking <- "/03-valuation-alt-methods"
+setwd(paste0(dirBase, dirWorking))
+
+# Generic finance functions
+source(paste0(dirBase, "/01-tvm/r-code/func_finance.R"))
+```
+
+
+## 1.1 Leverage and Cost of Capital
+
+Weighted Average Cost of Capital (WACC)
+
+
+
+
+
+
+
+
+
+
+
+
+
