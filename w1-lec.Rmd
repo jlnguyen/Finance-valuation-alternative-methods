@@ -23,17 +23,187 @@ source(paste0(dirBase, "/01-tvm/r-code/func_finance.R"))
 
 ## 1.1 Leverage and Cost of Capital
 
-Weighted Average Cost of Capital (WACC)
+### Cost of Capital: All Equity World
+
+- If a firm/project is **all-equity financed**, the cost of capital (or the return on assets) is the return on equity
+- The return on equity is obtained by using the **beta of equity** in **CAPM** for a comparable
+- All **published betas** are **betas of equity**
+
+
+### World has both Equity and Debt
+
+- A firm/project/idea could be financed by equity and debt, and hybrids
+- Equity and debt capture the most important aspects of financing for valuation
+- **Leverage** means that the firm uses debth in its **capital structure**
+
+
+### A Path-Breaking Result
+
+- In a world with competitive markets and no frictions, financing (or the mix of equity and debt) has no effects on the value of an idea/project/firm (**Modigliani-Miller**)
+    - Value is created by your idea (real asset) and its ability to generate cash flows
+    - Financing **cannot** create value
+    - The cost of capital, or the return on asset, is determined by the inherent (market) risk (beta) of the business (real asset), not by how it is financed
+    
+
+### Debt and Cost of Capital
+
+- Under perfect capital markets, the expected return $\mathbf{E}(r_a)$ is the weighted average of the equity and debt cost of capital, or the weighted average cost of capital (WACC):
+$$
+WACC = \mathbf{E}(r_a) = \frac{D}{E_L + D} \mathbf{E}(r_d) + \frac{E_L}{E_L + D} \mathbf{E}(r_e^L)
+$$
+where $\mathbf{E}(r_d)$ is the required rate of return on debt and $\mathbf{E}(r_e^L)$ is the required rate of return on the *levered* equity of the firm.
+
+
+## 1.2 Leverage and Risk
 
 
 
+## 1.4 Valuation: Mega Example Setup
+
+#### An Example
+
+- Online, Inc. is a video gaming company with no debt. Recently, their stock has been added to NASDAQ and it has an (equity) beta of 1.50 (NOTE: this is riskier than market, which has a beta of 1.00)
+- Online, Inc. is considering investing in the software business. The business project will require an initial investment of $50 million. If undertaken, the video gaming business will represent 25% of Online, Inc.'s assets
+- There is 50% chance the project will generate an annual payoff of $7 million forever, a 40% chance of an annual payoff of $5 million forever, and a 10% chance that the project will fail and generate no cash flows.
+- Companies solely in the software business have an equity beta of 1.40. These firms have a debt/equity ratio of 0.25 on average and have riskless debt. Online, Inc. is forecasting that the average market risk premium is about 5% and the risk-free rate on a long-term bond is 4.5%
 
 
+#### CAPM
+$$
+r_a = r_f + \beta_a (r_m - r_f)
+$$
+
+Here,  
+$r_f = 4.5\%$, $r_m = 4.5 + 5 = 9.5\%$, $\beta^{soft}_e = 1.40$, $\beta^{soft}_d = 0$, and $\frac{D}{E} = 0.25$.
 
 
+## 1.5 Mega Example: Question 1
+
+What is Online, Inc's cost of capital before undertaking the project?
+
+Since Online, Inc. has zero debt, $r_a = r_e$.
+
+```{r}
+# Use CAPM
+rf <- 0.045
+rp <- 0.05
+beta <- 1.5
+ra <- rf + beta * rp; ra
+```
 
 
+## 1.7 Mega Example: Question 2
+
+What is the IRR of the new project?
+
+SOLUTION:
+
+The expected cash flow accounts for all scenarios (events):  
+```{r}
+evt.p <- c(0.5, 0.4, 0.1)
+evt.c <- c(7e6, 5e6, 0)
+
+c <- evt.p %*% evt.c
+cost <- 50e6
+IRR(cost, c, inf = TRUE)
+```
 
 
+## 1.9 Mega Example: Question 3
+
+Should Online, Inc. take the new project? (given cost of capital and IRR)
+
+**NO**, since cost of capital (12%) is greater than IRR (11%).
+
+**GUTAM'S ANSWER: Don't know** because IRR is for new *software* project (12%), but cost of capital (r) is for *video gaming* (11%). Hence, we cannot compare these.
 
 
+## 1.11 Mega Example: Question 4
+
+What is the cost of capital (hurdle rate) of the project (software)?
+
+#### SOLUTION
+
+Asset risk:
+$$
+\beta_a = \beta_e \left( \frac{E}{D + E} \right) + \beta_d \left( \frac{D}{D + E} \right)
+$$
+Rearranging for equity risk $\beta_e$:
+$$
+\beta_e = \beta_a + \frac{D}{E} (\beta_a - \beta_d)
+$$
+Now for the software industry (superscript $s$),
+$$
+1.40 = \beta_a^s + 0.25 (\beta_a^s - 0)
+$$
+So,
+$$
+\beta_a^s = \frac{1.40}{1.25} = 1.12
+$$
+Now, use CAPM to get cost of capital of software industry:
+$$
+r_a^s = r_f + \beta_a^s (r_m - r_f)
+$$
+```{r}
+betaSoft <- 1.40/1.25
+rSoft <- rf + betaSoft * rp; rSoft
+```
+
+
+## 1.13 Mega Example: Question 5
+
+Should Online, Inc. take the new project? (given cost of capital of software industry now)
+
+**YES** rSoft < IRR (10.1% < 11%)
+
+
+## 1.14 Mega Example: Question 6
+
+If Online, Inc. has 1 million shares, what will happen to its stock price?
+
+If Online, Inc. invests in the software product, it will invest $50 million and so reduce earnings per share (EPS). Hence, the stock price will go down.
+
+**Gutam answer: consider NPV**  
+For perpetuity,
+$$
+\begin{align}
+\text{NPV} &= I_0 + \text{PV}(c1, c2, ...) \\
+           &= I_0 + \frac{c}{r_a^s}
+\end{align}
+$$
+
+```{r}
+# NPV of software project
+npv <- -cost + c / rSoft
+
+# price per share (stock price)
+pps <- npv / 1e6; pps
+```
+
+Share price will **increase** by $4.46.
+
+
+## 1.16 Mega Example: Question 7
+
+What is Online, Inc.'s new cost of capital? Is this good or bad news?
+
+#### SOLUTION
+
+```{r}
+# Previous data - video and software businesses of Online, Inc.
+raVideo <- 0.12
+betaVideo <- 1.50
+
+raSoft <- 0.101
+betaSoft <- 1.12
+
+raOnline <- raVideo * 0.25 + raSoft * 0.75; raOnline
+```
+
+While the cost of capital has dropped from 12% to 10.56% (purely video to combination video/software), we cannot say whether or not this is better because we don't have a benchmark to compare to. We can assess the new risk of Online, Inc.
+
+```{r}
+betaOnline <- betaVideo * 0.25 + betaSoft * 0.75; betaOnline
+```
+
+With a new beta of 1.22 (< 1.50 for video only), we see that lower return comes to lower risk (and vice versa).
